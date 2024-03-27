@@ -8,9 +8,6 @@ import { development, production } from './core';
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
 const ENVIRONMENT = process.env.NODE_ENV || '';
 
-console.log('BOT_TOKEN:', BOT_TOKEN);
-console.log('ENVIRONMENT:', ENVIRONMENT);
-
 const bot = new Telegraf(BOT_TOKEN);
 
 bot.command('about', about());
