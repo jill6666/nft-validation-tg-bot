@@ -36,7 +36,7 @@ const production = async (
     }
     debug(`starting webhook on port: ${PORT}`);
   } catch (e) {
-    console.log(`Error: ${e}`);
+    debug(`Error: ${e}`);
   }
 };
 export { production };

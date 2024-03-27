@@ -18,7 +18,7 @@ const development = async (bot: Telegraf<Context<Update>>) => {
     process.once('SIGINT', () => bot.stop('SIGINT'));
     process.once('SIGTERM', () => bot.stop('SIGTERM'));
   } catch (e) {
-    console.log(`Error: ${e}`);
+    debug(`Error: ${e}`);
   }
 };
 
