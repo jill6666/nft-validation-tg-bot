@@ -7,12 +7,5 @@
       "destination": "api/index.ts"
     }
   ],
-  "redirects": [
-    { "source": "/", "destination": "/api", "permanent": false },
-    {
-      "source": "tonconnect-manifest.json",
-      "destination": "./tonconnect-manifest.json",
-      "permanent": false
-    }
-  ]
+  "redirects": [{ "source": "/", "destination": "/api", "permanent": false }]
 }
