@@ -4,21 +4,22 @@ import { message } from 'telegraf/filters';
 import { about } from './commands';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { development, production } from './core';
-import { nftVerify } from './commands/nftValidate';
-import onWalletClick from './utils/onWalletClick';
+import { walletMenuCallbacks } from './commands/walletMenus';
 
-const BOT_TOKEN = process.env.BOT_TOKEN || '';
-const ENVIRONMENT = process.env.NODE_ENV || '';
-
-const bot = new Telegraf(BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN || '');
 
 bot.command('about', about());
-bot.on(message('sticker'), nftVerify());
-
+bot.on(message('sticker'), walletMenuCallbacks.chose_wallet);
 bot.on('callback_query', async (ctx) => {
   // @ts-ignore
-  const wallet = JSON.parse(ctx?.callbackQuery?.data)?.data;
-  onWalletClick(ctx, wallet);
+  const data = JSON.parse(ctx?.callbackQuery?.data);
+  const method = data?.method;
+
+  if (!walletMenuCallbacks[method as keyof typeof walletMenuCallbacks]) return;
+  walletMenuCallbacks[method as keyof typeof walletMenuCallbacks](
+    ctx,
+    data?.data,
+  );
 });
 
 //prod mode (Vercel)
@@ -26,4 +27,4 @@ export const startVercel = async (req: VercelRequest, res: VercelResponse) => {
   await production(req, res, bot);
 };
 //dev mode
-ENVIRONMENT !== 'production' && development(bot);
+process.env.NODE_ENV !== 'production' && development(bot);
