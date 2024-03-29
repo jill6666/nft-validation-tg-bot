@@ -1,10 +1,10 @@
-import { Context } from 'telegraf';
+import { Context, Input } from 'telegraf';
 import { getConnector } from '../ton-connect/connector';
 import { getWalletInfo } from '../ton-connect/wallets';
 import { isTelegramUrl } from '@tonconnect/sdk';
 import addTGReturnStrategy from './addTGReturnStrategy';
 import createDebug from 'debug';
-import editQR from './editQR';
+import { toBuffer } from 'qrcode';
 
 const debug = createDebug('bot:on_wallet_click');
 
@@ -29,9 +29,9 @@ async function onWalletClick(ctx: Context, walletName: string): Promise<void> {
         process.env.TELEGRAM_BOT_LINK!,
       );
     }
+    const image = await toBuffer(buttonLink, { type: 'png' });
 
-    await editQR(ctx, buttonLink);
-    await ctx.reply('Click to connect or back to choose other wallet.', {
+    await ctx.replyWithPhoto(Input.fromBuffer(image), {
       reply_markup: {
         inline_keyboard: [
           [
