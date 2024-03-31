@@ -17,14 +17,14 @@ const production = async (
     debug('Bot runs in production mode');
     debug(`setting webhook: ${VERCEL_URL}`);
 
-    if (!VERCEL_URL) {
-      throw new Error('VERCEL_URL is not set.');
-    }
+    if (!VERCEL_URL) throw new Error('VERCEL_URL is not set.');
 
     const getWebhookInfo = await bot.telegram.getWebhookInfo();
+
     if (getWebhookInfo.url !== VERCEL_URL + '/api') {
       debug(`deleting webhook ${VERCEL_URL}`);
       await bot.telegram.deleteWebhook();
+
       debug(`setting webhook: ${VERCEL_URL}/api`);
       await bot.telegram.setWebhook(`${VERCEL_URL}/api`);
     }
