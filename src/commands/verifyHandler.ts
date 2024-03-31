@@ -82,6 +82,8 @@ export async function verifyHandler(ctx: Context): Promise<void> {
   });
 
   const wallets = await getWallets();
+  const link = connector.connect(wallets);
+  const image = await toBuffer(link, { type: 'png' });
 
   const buttons = wallets.map((wallet) => ({
     text: wallet.name,
@@ -101,7 +103,7 @@ export async function verifyHandler(ctx: Context): Promise<void> {
     keyboard.push(row);
   }
 
-  const botMessage = await ctx.sendPhoto('https://i.imgur.com/8nLFCVP.png', {
+  const botMessage = await ctx.sendPhoto(Input.fromBuffer(image), {
     reply_markup: {
       inline_keyboard: keyboard,
     },

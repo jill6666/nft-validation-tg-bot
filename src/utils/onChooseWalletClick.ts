@@ -27,10 +27,6 @@ const onChooseWallet = async (ctx: Context) => {
       keyboard.push(row);
     }
 
-    await ctx.editMessageMedia({
-      type: 'photo',
-      media: 'https://i.imgur.com/8nLFCVP.png',
-    });
     await ctx.editMessageReplyMarkup({ inline_keyboard: keyboard });
   } catch (e) {
     console.log(e);
