@@ -36,6 +36,14 @@ async function onWalletClick(ctx: Context, walletName: string): Promise<void> {
       type: 'photo',
       media: Input.fromBuffer(image),
     });
+
+    // TODO: sleep for 300ms to wait for the image to load
+    setTimeout(() => {
+      new Promise((resolve) => {
+        resolve('resolved');
+      });
+    }, 300);
+
     await ctx.editMessageReplyMarkup({
       inline_keyboard: [
         [
