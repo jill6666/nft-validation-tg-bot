@@ -1,19 +1,12 @@
 import { Context, Input } from 'telegraf';
-import {
-  CHAIN,
-  toUserFriendlyAddress,
-  isTelegramUrl,
-  encodeTelegramUrlParameters,
-} from '@tonconnect/sdk';
+import { CHAIN, toUserFriendlyAddress } from '@tonconnect/sdk';
 import { getWallets, getWalletInfo } from '../ton-connect/wallets';
 import { toBuffer } from 'qrcode';
 import { getConnector } from '../ton-connect/connector';
-import addTGReturnStrategy from '../utils/addTGReturnStrategy';
 import checkNftOwnership from '../utils/checkNftOwnership';
 import adminWhitelist from '../utils/adminWhitelist';
 
 let newConnectRequestListenersMap = new Map<number, () => void>();
-const AT_WALLET_APP_NAME = 'telegram-wallet';
 
 /**
  * @description Handler for the /verify command
@@ -69,13 +62,19 @@ export async function verifyHandler(ctx: Context): Promise<void> {
         collection: 'EQCV8xVdWOV23xqOyC1wAv-D_H02f7gAjPzOlNN6Nv1ksVdL',
       });
 
+      const userName =
+        `@${ctx.from?.username}` ||
+        `${ctx.from?.first_name} ${ctx.from?.last_name || ''}` ||
+        userFriendlyAddress;
+
       if (isAdmin || hasPermission)
-        await ctx.sendMessage(`Welcome, ${userFriendlyAddress}! 🎉`);
-      else
+        await ctx.sendMessage(`Welcome, ${userName} ! 🎉`);
+      else {
         await ctx.sendMessage(
           `You don't have permission to access this group chat. Please contact the group admin for more information.`,
         );
-      await ctx.banChatMember(ctx.from?.id!);
+        await ctx.banChatMember(ctx.from?.id!);
+      }
 
       unsubscribe();
       newConnectRequestListenersMap.delete(chatId);
@@ -85,32 +84,28 @@ export async function verifyHandler(ctx: Context): Promise<void> {
   const wallets = await getWallets();
   const link = connector.connect(wallets);
   const image = await toBuffer(link, { type: 'png' });
-  const atWallet = wallets.find(
-    (wallet) => wallet.appName.toLowerCase() === AT_WALLET_APP_NAME,
-  );
 
-  const atWalletLink = atWallet
-    ? addTGReturnStrategy(
-        convertDeeplinkToUniversalLink(link, atWallet?.universalLink),
-        process.env.TELEGRAM_BOT_LINK!,
-      )
-    : undefined;
-  const keyboard = [
-    {
-      text: 'Choose a Wallet',
-      callback_data: JSON.stringify({ method: 'chose_wallet' }),
-    },
-  ];
-  if (atWalletLink) {
-    keyboard.unshift({
-      text: '@wallet',
-      // @ts-ignore
-      url: atWalletLink,
-    });
+  const buttons = wallets.map((wallet) => ({
+    text: wallet.name,
+    callback_data: JSON.stringify({
+      method: 'select_wallet',
+      data: wallet.appName,
+    }),
+  }));
+
+  const length = buttons.length;
+  const cols = 2; // Number of columns
+  const rows = Math.ceil(length / cols); // Calculate the number of rows
+  const keyboard = [];
+
+  for (let i = 0; i < rows; i++) {
+    const row = buttons.slice(i * cols, (i + 1) * cols);
+    keyboard.push(row);
   }
+
   const botMessage = await ctx.sendPhoto(Input.fromBuffer(image), {
     reply_markup: {
-      inline_keyboard: [keyboard],
+      inline_keyboard: keyboard,
     },
   });
 
@@ -128,22 +123,4 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
     newConnectRequestListenersMap.delete(chatId);
   });
-}
-
-function convertDeeplinkToUniversalLink(
-  link: string,
-  walletUniversalLink: string,
-): string {
-  const search = new URL(link).search;
-  const url = new URL(walletUniversalLink);
-
-  if (isTelegramUrl(walletUniversalLink)) {
-    const startattach =
-      'tonconnect-' + encodeTelegramUrlParameters(search.slice(1));
-    url.searchParams.append('startattach', startattach);
-  } else {
-    url.search = search;
-  }
-
-  return url.toString();
 }
