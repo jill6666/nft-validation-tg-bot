@@ -1,6 +1,6 @@
 import { Context } from 'telegraf';
 import createDebug from 'debug';
-import checkUserExsist from './checkUserExsist';
+import adminWhitelist from './adminWhitelist';
 import { getWallets } from '../ton-connect/wallets';
 
 const debug = createDebug('bot:on_choose_wallet');
@@ -10,9 +10,9 @@ const onChooseWallet = async (ctx: Context) => {
     const userId = ctx.from?.id;
     if (!userId) throw new Error('User not found');
 
-    const userVarified = await checkUserExsist(userId);
-    if (Boolean(userVarified)) {
-      ctx.reply('You are already verified! 🎉');
+    const isAdmin = await adminWhitelist(userId);
+    if (Boolean(isAdmin)) {
+      ctx.reply('You are already verified as Admin! 🎉');
     } else {
       const wallets = await getWallets();
       const buttons = wallets.map((wallet) => ({
@@ -32,14 +32,7 @@ const onChooseWallet = async (ctx: Context) => {
         keyboard.push(row);
       }
 
-      await ctx.reply(
-        'To check for the presence of NFT, connect your wallet.',
-        {
-          reply_markup: {
-            inline_keyboard: keyboard,
-          }
-        },
-      );
+      await ctx.editMessageReplyMarkup({ inline_keyboard: keyboard });
     }
   } catch (e) {
     console.log(e);

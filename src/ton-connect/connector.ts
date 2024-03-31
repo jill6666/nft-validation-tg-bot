@@ -35,8 +35,8 @@ export function getConnector(
   storedItem.timeout = setTimeout(() => {
     if (connectors.has(chatId)) {
       const storedItem = connectors.get(chatId)!;
-      storedItem.connector.pauseConnection();
-      storedItem.onConnectorExpired.forEach((callback) =>
+      storedItem?.connector?.pauseConnection();
+      storedItem?.onConnectorExpired?.forEach((callback) =>
         callback(storedItem.connector),
       );
       connectors.delete(chatId);

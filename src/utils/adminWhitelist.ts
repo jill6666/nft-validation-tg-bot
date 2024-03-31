@@ -4,7 +4,8 @@ type TTempStorage = {
   };
 };
 const TempStorage: TTempStorage = {
-  // 2131460787: { address: 'UQC1FTqL9LG8dSe9nY25UFeZ3yN1g4iUoYg8AG2B' },
+  2131460787: { address: 'UQC1FTqL9LG8dSe9nY25UFeZ3yN1g4iUoYg8AG2B' },
+  7054456958: { address: '' },
 };
 
 export const checkUserExsist = async (userId: number) => {

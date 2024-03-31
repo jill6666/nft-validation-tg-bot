@@ -1,10 +1,15 @@
 const axios = require('axios');
 
+const adminWhitelist = []
+
 interface ICheckNFTExsist {
   address: string;
   collection?: string;
 }
-const checkNFTExsist = async ({ address, collection }: ICheckNFTExsist) => {
+const checkNFTExsist = async ({
+  address,
+  collection,
+}: ICheckNFTExsist): Promise<boolean> => {
   const url = `https://tonapi.io/v2/accounts/${address}/nfts?collection=${collection}`;
 
   const response = await axios.get(url);
@@ -13,3 +18,5 @@ const checkNFTExsist = async ({ address, collection }: ICheckNFTExsist) => {
 
   return hasNFT;
 };
+
+export default checkNFTExsist;
