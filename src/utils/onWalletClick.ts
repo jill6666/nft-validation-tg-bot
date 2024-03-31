@@ -6,7 +6,6 @@ import addTGReturnStrategy from './addTGReturnStrategy';
 import createDebug from 'debug';
 import { toBuffer } from 'qrcode';
 
-let address = '';
 const debug = createDebug('bot:on_wallet_click');
 
 async function onWalletClick(ctx: Context, walletName: string): Promise<void> {
@@ -32,17 +31,6 @@ async function onWalletClick(ctx: Context, walletName: string): Promise<void> {
     }
     const image = await toBuffer(buttonLink, { type: 'png' });
 
-    await ctx.editMessageMedia({
-      type: 'photo',
-      media: Input.fromBuffer(image),
-    });
-
-    // TODO: sleep for 300ms to wait for the image to load
-    setTimeout(() => {
-      new Promise((resolve) => {
-        resolve('resolved');
-      });
-    }, 300);
 
     await ctx.editMessageReplyMarkup({
       inline_keyboard: [
@@ -57,6 +45,10 @@ async function onWalletClick(ctx: Context, walletName: string): Promise<void> {
           },
         ],
       ],
+    });
+    await ctx.editMessageMedia({
+      type: 'photo',
+      media: Input.fromBuffer(image),
     });
   } catch (e) {
     debug(`Error in "onChooseWallet": ${JSON.stringify(e)}`);
