@@ -13,7 +13,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN || '');
 bot.command('about', about());
 bot.command('disconnect', disconnect);
 bot.command('verify', verifyHandler);
-bot.on('callback_query', async (ctx) => {
+bot.on('callback_query', (ctx) => {
   // @ts-ignore
   const data = JSON.parse(ctx?.callbackQuery?.data);
   const method = data?.method;
