@@ -8,6 +8,7 @@ import { toBuffer } from 'qrcode';
 
 const debug = createDebug('bot:on_wallet_click');
 
+// method: select_wallet
 async function onWalletClick(ctx: Context, walletName: string): Promise<void> {
   try {
     const chatId = ctx.chat?.id;
@@ -34,6 +35,7 @@ async function onWalletClick(ctx: Context, walletName: string): Promise<void> {
       type: 'photo',
       media: Input.fromBuffer(image),
     });
+    await new Promise((resolve) => setTimeout(resolve, 500));
     await ctx.editMessageReplyMarkup({
       inline_keyboard: [
         [
