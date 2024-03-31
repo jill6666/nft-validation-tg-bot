@@ -1,5 +1,4 @@
 import { Telegraf } from 'telegraf';
-import { message } from 'telegraf/filters';
 
 import { about } from './commands';
 import { VercelRequest, VercelResponse } from '@vercel/node';
@@ -13,16 +12,18 @@ const bot = new Telegraf(process.env.BOT_TOKEN || '');
 bot.command('about', about());
 bot.command('disconnect', disconnect);
 bot.command('verify', verifyHandler);
-bot.on('callback_query', (ctx) => {
-  // @ts-ignore
-  const data = JSON.parse(ctx?.callbackQuery?.data);
-  const method = data?.method;
+bot.on('callback_query', async (ctx) => {
+  try {
+    // @ts-ignore
+    const data = JSON.parse(ctx?.callbackQuery?.data);
+    const method = data?.method;
+    const fn = walletMenuCallbacks[method as keyof typeof walletMenuCallbacks];
 
-  if (!walletMenuCallbacks[method as keyof typeof walletMenuCallbacks]) return;
-  walletMenuCallbacks[method as keyof typeof walletMenuCallbacks](
-    ctx,
-    data?.data,
-  );
+    if (!fn) return;
+    await fn(ctx, data?.data);
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 //prod mode (Vercel)
