@@ -4,7 +4,7 @@ import { getConnector } from '../ton-connect/connector';
 
 const debug = createDebug('bot:about_command');
 
-const disconnect = async (ctx: Context) => {
+export const disconnect = async (ctx: Context) => {
   try {
     const chatId = ctx.chat?.id;
     if (!chatId) throw new Error('Chat not found');

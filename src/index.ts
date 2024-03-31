@@ -1,11 +1,8 @@
 import { Telegraf } from 'telegraf';
 
-import { about } from './commands';
+import { about, disconnect, verifyHandler, callbacks } from './commands';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { development, production } from './core';
-import { walletMenuCallbacks } from './commands/walletMenu';
-import disconnect from './commands/disconnect';
-import { verifyHandler } from './commands/verifyHandler';
 
 const bot = new Telegraf(process.env.BOT_TOKEN || '');
 
@@ -17,7 +14,7 @@ bot.on('callback_query', async (ctx) => {
     // @ts-ignore
     const data = JSON.parse(ctx?.callbackQuery?.data);
     const method = data?.method;
-    const fn = walletMenuCallbacks[method as keyof typeof walletMenuCallbacks];
+    const fn = callbacks[method as keyof typeof callbacks];
 
     if (!fn) return;
     await fn(ctx, data?.data);

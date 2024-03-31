@@ -8,7 +8,7 @@ const TempStorage: TTempStorage = {
   // 7054456958: { address: 'UQA0zP0Qt_e3wijio3a3OnqUYa9MO1oKko4c2u75YYdTATLF' },
 };
 
-export const checkUserExsist = async (userId: number) => {
+export const checkUserExsist = (userId: number) => {
   console.log('userId', userId);
   return TempStorage?.[userId];
 };

@@ -15,7 +15,7 @@ async function handleUnSubscribe(ctx: Context, connector: TonConnect) {
   const userId = ctx.from?.id;
   if (!userId) throw new Error('User ID not found');
 
-  const isAdmin = await adminWhitelist(userId);
+  const isAdmin = Boolean(adminWhitelist(userId));
   const hasPermission = await checkNftOwnership({
     address: userFriendlyAddress,
     collection: 'EQCV8xVdWOV23xqOyC1wAv-D_H02f7gAjPzOlNN6Nv1ksVdL',
