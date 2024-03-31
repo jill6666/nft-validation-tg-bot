@@ -31,25 +31,28 @@ async function onWalletClick(ctx: Context, walletName: string): Promise<void> {
       );
     }
     const image = await toBuffer(buttonLink, { type: 'png' });
-    await ctx.editMessageMedia({
-      type: 'photo',
-      media: Input.fromBuffer(image),
-    });
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    await ctx.editMessageReplyMarkup({
-      inline_keyboard: [
-        [
-          {
-            text: '« Back',
-            callback_data: JSON.stringify({ method: 'chose_wallet' }),
-          },
-          {
-            text: `Open ${selectedWallet?.name}`,
-            url: buttonLink,
-          },
-        ],
-      ],
-    });
+    await ctx.editMessageMedia(
+      {
+        type: 'photo',
+        media: Input.fromBuffer(image),
+      },
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: '« Back',
+                callback_data: JSON.stringify({ method: 'chose_wallet' }),
+              },
+              {
+                text: `Open ${selectedWallet?.name}`,
+                url: buttonLink,
+              },
+            ],
+          ],
+        },
+      },
+    );
   } catch (e) {
     debug(`Error in "onChooseWallet": ${JSON.stringify(e)}`);
   }
