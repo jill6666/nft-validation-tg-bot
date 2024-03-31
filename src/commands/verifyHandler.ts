@@ -30,7 +30,10 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
   await connector.restoreConnection();
 
-  if (connector.connected) return await handleConnected(ctx, connector);
+  if (connector.connected) {
+    await handleConnected(ctx, connector);
+    return;
+  }
 
   const unsubscribe = connector.onStatusChange(async (wallet) => {
     if (wallet) {

@@ -13,7 +13,5 @@ async function handleConnected(ctx: Context, connector: TonConnect) {
       connector.wallet!.account.chain === CHAIN.TESTNET,
     )}\n\n Disconnect wallet firstly to connect a new one`,
   );
-
-  return;
 }
 export default handleConnected;
