@@ -20,10 +20,11 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
   if (!chatId) throw new Error('Chat not found');
 
-  newConnectRequestListenersMap.get(chatId)?.();
+  await newConnectRequestListenersMap.get(chatId)?.();
 
   const connector = getConnector(chatId, () => {
     unsubscribe();
+    newConnectRequestListenersMap.delete(chatId);
     deleteMessage();
   });
 
@@ -62,8 +63,10 @@ export async function verifyHandler(ctx: Context): Promise<void> {
     }
   };
 
+  // Add listener to delete message when new connect request is received
   newConnectRequestListenersMap.set(chatId, async () => {
     unsubscribe();
     await deleteMessage();
+    newConnectRequestListenersMap.delete(chatId);
   });
 }
