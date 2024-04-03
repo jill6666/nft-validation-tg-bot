@@ -24,7 +24,6 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
   const connector = getConnector(chatId, () => {
     unsubscribe();
-    newConnectRequestListenersMap.delete(chatId);
     deleteMessage();
   });
 
@@ -65,9 +64,6 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
   newConnectRequestListenersMap.set(chatId, async () => {
     unsubscribe();
-
     await deleteMessage();
-
-    newConnectRequestListenersMap.delete(chatId);
   });
 }
