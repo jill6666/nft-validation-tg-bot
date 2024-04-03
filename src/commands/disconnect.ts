@@ -14,16 +14,17 @@ export const disconnect = async (ctx: Context) => {
 
     let msg = 'Wallet has been disconnected';
 
-    if (!connector.connected) msg = "You didn't connect a wallet";
-    else await connector.disconnect();
+    if (!connector.connected) {
+      await ctx.sendMessage("You didn't connect a wallet");
+      return;
+    }
 
+    await connector.disconnect();
     await ctx.sendMessage(msg);
   } catch (e) {
     console.log(e);
     debug(`Error in "disconnect": ${JSON.stringify(e)}`);
   }
-
-  return;
 };
 
 export default disconnect;

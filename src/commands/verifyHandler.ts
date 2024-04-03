@@ -20,9 +20,10 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
   if (!chatId) throw new Error('Chat not found');
 
-  await newConnectRequestListenersMap.get(chatId)?.();
+  newConnectRequestListenersMap.get(chatId)?.();
 
   const connector = getConnector(chatId, () => {
+    console.log('unsubscribe 1');
     unsubscribe();
     newConnectRequestListenersMap.delete(chatId);
     deleteMessage();
@@ -38,16 +39,20 @@ export async function verifyHandler(ctx: Context): Promise<void> {
   const unsubscribe = connector.onStatusChange(async (wallet) => {
     if (wallet) {
       await deleteMessage();
+      console.log('ready to handleUnSubscribe');
       await handleUnSubscribe(ctx, connector);
 
+      console.log('unsubscribe 2');
       unsubscribe();
       newConnectRequestListenersMap.delete(chatId);
     }
   });
 
   const wallets = await getWallets();
+
   const link = connector.connect(wallets);
   const image = await toBuffer(link, { type: 'png' });
+
   const keyboard = getKeyboard(wallets);
 
   const botMessage = await ctx.sendPhoto(Input.fromBuffer(image), {
@@ -65,6 +70,7 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
   // Add listener to delete message when new connect request is received
   newConnectRequestListenersMap.set(chatId, async () => {
+    console.log('unsubscribe 3');
     unsubscribe();
     await deleteMessage();
     newConnectRequestListenersMap.delete(chatId);
