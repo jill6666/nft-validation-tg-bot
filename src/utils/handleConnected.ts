@@ -2,6 +2,10 @@ import { Context } from 'telegraf';
 import { CHAIN, toUserFriendlyAddress, TonConnect } from '@tonconnect/sdk';
 import { getWalletInfo } from '../ton-connect/wallets';
 
+/**
+ *
+ * @description Handle the case when the user is already connected to the wallet
+ */
 async function handleConnected(ctx: Context, connector: TonConnect) {
   const connectedName =
     (await getWalletInfo(connector.wallet!.device.appName))?.name ||

@@ -3,6 +3,10 @@ import { CHAIN, toUserFriendlyAddress, TonConnect } from '@tonconnect/sdk';
 import checkNftOwnership from './checkNftOwnership';
 import adminWhitelist from './adminWhitelist';
 
+/**
+ *
+ * @description Handle the case when the user is already connected to the wallet
+ */
 async function handleUnSubscribe(ctx: Context, connector: TonConnect) {
   const address = connector.account?.address;
   if (!address) throw new Error('Address not found');

@@ -1,16 +1,14 @@
-import { WalletInfoRemote } from '@tonconnect/sdk';
-
-function getKeyboard(wallets: WalletInfoRemote[]) {
-  const buttons = wallets.map((wallet) => ({
-    text: wallet.name,
-    callback_data: JSON.stringify({
-      method: 'select_wallet',
-      data: wallet.appName,
-    }),
-  }));
-
+interface IButtons {
+  text: string;
+  callback_data: string;
+}
+/**
+ *
+ * @description Generates a keyboard layout for the Telegram bot
+ * @returns
+ */
+function getKeyboard(buttons: IButtons[], cols = 2) {
   const length = buttons.length;
-  const cols = 2; // Number of columns
   const rows = Math.ceil(length / cols); // Calculate the number of rows
   const keyboard = [];
 

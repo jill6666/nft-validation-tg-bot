@@ -1,5 +1,9 @@
 import { encodeTelegramUrlParameters } from '@tonconnect/sdk';
 
+/**
+ *
+ * @description Add the return strategy to the Telegram link
+ */
 function addTGReturnStrategy(link: string, strategy: string): string {
   const parsed = new URL(link);
   parsed.searchParams.append('ret', strategy);

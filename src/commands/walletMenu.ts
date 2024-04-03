@@ -8,7 +8,7 @@ import { toBuffer } from 'qrcode';
 
 const debug = createDebug('bot:wallet_menu_callbacks');
 
-export const callbacks = {
+export const walletCallbacks = {
   select_wallet: onWalletClick,
   chose_wallet: onChooseWallet,
 };

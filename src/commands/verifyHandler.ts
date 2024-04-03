@@ -48,7 +48,14 @@ export async function verifyHandler(ctx: Context): Promise<void> {
   const wallets = await getWallets();
   const link = connector.connect(wallets);
   const image = await toBuffer(link, { type: 'png' });
-  const keyboard = getKeyboard(wallets);
+  const buttons = wallets.map((wallet) => ({
+    text: wallet.name,
+    callback_data: JSON.stringify({
+      method: 'select_wallet',
+      data: wallet.appName,
+    }),
+  }));
+  const keyboard = getKeyboard(buttons, 2);
 
   const botMessage = await ctx.sendPhoto(Input.fromBuffer(image), {
     reply_markup: {
