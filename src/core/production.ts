@@ -29,12 +29,9 @@ const production = async (
       await bot.telegram.setWebhook(`${VERCEL_URL}/api`);
     }
 
-    if (req.method === 'POST') {
-      await bot.handleUpdate(req.body as unknown as Update, res);
-    } else {
-      res.status(200).json('Listening to bot events...');
-    }
-    debug(`starting webhook on port: ${PORT}`);
+    await bot.launch(() => {
+      debug(`starting webhook on port: ${PORT}`);
+    });
   } catch (e) {
     debug(`Error: ${e}`);
   }
