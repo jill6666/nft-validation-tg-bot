@@ -5,6 +5,7 @@ import { getConnector } from '../ton-connect/connector';
 import handleUnSubscribe from '../utils/handleUnSubscribe';
 import handleConnected from '../utils/handleConnected';
 import getKeyboard from '../utils/getKeyboard';
+import { Wallet } from '@tonconnect/sdk';
 
 let newConnectRequestListenersMap = new Map<number, () => void>();
 
@@ -35,11 +36,16 @@ export async function verifyHandler(ctx: Context): Promise<void> {
     await handleConnected(ctx, connector);
     return;
   }
-  let unsubscribe = () => {};
+  let unsubscribe = connector.onStatusChange(async (wallet) =>
+    stageChange(wallet),
+  );
 
-  unsubscribe = connector.onStatusChange(async (wallet) => {
+  connector.onStatusChange(async (wallet) => stageChange(wallet));
+
+  async function stageChange(wallet: Wallet | null) {
     console.log('onStatusChange', Boolean(wallet));
-    if (wallet) {
+
+    if (wallet && chatId) {
       await deleteMessage();
       console.log('ready to handleUnSubscribe');
       await handleUnSubscribe(ctx, connector);
@@ -48,7 +54,7 @@ export async function verifyHandler(ctx: Context): Promise<void> {
       unsubscribe();
       newConnectRequestListenersMap.delete(chatId);
     }
-  });
+  }
 
   const wallets = await getWallets();
 
