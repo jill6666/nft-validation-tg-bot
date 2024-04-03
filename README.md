@@ -1,34 +1,26 @@
-# Telegram Bot Vercel Boilerplate
+# NFT Validation TG Bot
 
-Telegram Bot Vercel Boilerplate based on Node.js and [Telegraf](https://github.com/telegraf/telegraf) framework.
+The NFT Validation TG Bot is a project that aims to provide a Telegram bot for validating NFTs by collection in a Telegram group chat.
 
-This template inspired by [Telegram Bot Boilerplate](https://github.com/yakovlevyuri/telegram-bot-boilerplate) for easily deploy to [Vercel](https://vercel.com).
+## Table of Contents
 
-[![Live Demo](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@7rodma/deploy-a-serverless-telegram-chatbot-using-vercel-57665d942a58)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Before you start
+## Installation
 
-First rename `.env-sample` file to `.env` and fill in all necessary values.
+Instructions on how to install and set up the project locally. Include any dependencies that need to be installed.
 
-```
-BOT_TOKEN="<YOUR_BOT_API_TOKEN>"
-```
+## Usage
 
-## Start your local server
+Instructions on how to use the project. Provide examples and explanations of the main features.
 
-```
-yarn
-yarn dev
-```
+## Contributing
 
-## Production
+Guidelines on how to contribute to the project. Include information on how to submit bug reports, feature requests, and pull requests.
 
-You can fork this template and do the necessary changes you need. Then you when are done with your changes simply goto [vercel git import](https://vercel.com/import/git).
+## License
 
-Reference to [this update](https://vercel.com/docs/security/deployment-protection#migrating-to-standard-protection), you need turn off `Vercel Authentication`, Settings => Deployment Protection
-
-Feel free to create PR!
-
-## Demo
-
-You can see a working version of the bot at [@Node_api_m_bot](https://t.me/Node_api_m_bot)
+Information about the project's license. Specify the license type and provide a link to the license file if applicable.
