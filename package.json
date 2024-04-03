@@ -7,6 +7,7 @@
   "homepage": "https://github.com/jill6666/nft-validation-tg-bot/",
   "dependencies": {
     "@tonconnect/sdk": "^3.0.0",
+    "@vercel/kv": "^1.0.1",
     "@vercel/node": "^3.0.22",
     "axios": "^1.6.8",
     "dotenv-cli": "^7.4.1",
