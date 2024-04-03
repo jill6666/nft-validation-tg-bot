@@ -12,8 +12,7 @@ export class TonConnectStorage implements IStorage {
   }
 
   async setItem(key: string, value: string): Promise<void> {
-    console.log('setItem', key, value);
-    await kv.set(this.getKey(key), value);
+    await kv.set(this.getKey(key), JSON.stringify(value));
   }
 
   async getItem(key: string): Promise<string | null> {
