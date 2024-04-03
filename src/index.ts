@@ -1,21 +1,33 @@
 import { Telegraf } from 'telegraf';
 
-import { about } from './commands';
-import { greeting } from './text';
+import { disconnect, verifyHandler, walletCallbacks } from './commands';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { development, production } from './core';
 
-const BOT_TOKEN = process.env.BOT_TOKEN || '';
-const ENVIRONMENT = process.env.NODE_ENV || '';
+const bot = new Telegraf(process.env.BOT_TOKEN || '');
 
-const bot = new Telegraf(BOT_TOKEN);
+const callbacks = { ...walletCallbacks };
 
-bot.command('about', about());
-bot.on('message', greeting());
+bot.on('callback_query', async (ctx) => {
+  try {
+    // @ts-ignore
+    const request = JSON.parse(ctx?.callbackQuery?.data);
+    const method = request?.method;
+    const fn = callbacks[method as keyof typeof callbacks];
+
+    if (!fn) return;
+    await fn(ctx, request?.data);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+bot.command('disconnect', disconnect);
+bot.command('verify', verifyHandler);
 
 //prod mode (Vercel)
 export const startVercel = async (req: VercelRequest, res: VercelResponse) => {
   await production(req, res, bot);
 };
 //dev mode
-ENVIRONMENT !== 'production' && development(bot);
+process.env.NODE_ENV !== 'production' && development(bot);

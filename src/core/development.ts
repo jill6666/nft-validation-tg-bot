@@ -13,12 +13,14 @@ const development = async (bot: Telegraf<Context<Update>>) => {
     await bot.telegram.deleteWebhook();
     debug(`${botInfo} starting polling`);
 
-    await bot.launch();
+    await bot.launch(() => {
+      debug('Bot is running');
+    });
 
     process.once('SIGINT', () => bot.stop('SIGINT'));
     process.once('SIGTERM', () => bot.stop('SIGTERM'));
   } catch (e) {
-    console.log(`Error: ${e}`);
+    debug(`Error: ${e}`);
   }
 };
 
