@@ -16,11 +16,9 @@ export function getConnector(
 ): TonConnect {
   let storedItem: StoredConnectorData;
   if (connectors.has(chatId)) {
-    console.log('has connector');
     storedItem = connectors.get(chatId)!;
     clearTimeout(storedItem.timeout);
   } else {
-    console.log('has no connector');
     storedItem = {
       connector: new TonConnect({
         manifestUrl: process.env.MANIFEST_URL,
