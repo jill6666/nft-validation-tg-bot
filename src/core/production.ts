@@ -29,7 +29,7 @@ const production = async (
       await bot.telegram.setWebhook(`${VERCEL_URL}/api`);
     }
 
-    await bot.handleUpdate(req.body as unknown as Update);
+    await bot.handleUpdate(req.body as unknown as Update, res);
   } catch (e) {
     debug(`Error: ${e}`);
   }
