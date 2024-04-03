@@ -35,8 +35,10 @@ export async function verifyHandler(ctx: Context): Promise<void> {
     await handleConnected(ctx, connector);
     return;
   }
+  let unsubscribe = () => {};
 
-  const unsubscribe = connector.onStatusChange(async (wallet) => {
+  unsubscribe = connector.onStatusChange(async (wallet) => {
+    console.log('onStatusChange', Boolean(wallet));
     if (wallet) {
       await deleteMessage();
       console.log('ready to handleUnSubscribe');
