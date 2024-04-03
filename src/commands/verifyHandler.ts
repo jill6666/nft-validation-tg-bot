@@ -5,7 +5,6 @@ import { getConnector } from '../ton-connect/connector';
 import handleUnSubscribe from '../utils/handleUnSubscribe';
 import handleConnected from '../utils/handleConnected';
 import getKeyboard from '../utils/getKeyboard';
-import { Wallet } from '@tonconnect/sdk';
 
 let newConnectRequestListenersMap = new Map<number, () => void>();
 
@@ -21,10 +20,9 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
   if (!chatId) throw new Error('Chat not found');
 
-  newConnectRequestListenersMap.get(chatId)?.();
+  await newConnectRequestListenersMap.get(chatId)?.();
 
   const connector = getConnector(chatId, () => {
-    console.log('unsubscribe 1');
     unsubscribe();
     newConnectRequestListenersMap.delete(chatId);
     deleteMessage();
@@ -36,31 +34,20 @@ export async function verifyHandler(ctx: Context): Promise<void> {
     await handleConnected(ctx, connector);
     return;
   }
-  let unsubscribe = connector.onStatusChange(async (wallet) =>
-    stageChange(wallet),
-  );
 
-  connector.onStatusChange(async (wallet) => stageChange(wallet));
-
-  async function stageChange(wallet: Wallet | null) {
-    console.log('onStatusChange', Boolean(wallet));
-
-    if (wallet && chatId) {
+  const unsubscribe = connector.onStatusChange(async (wallet) => {
+    if (wallet) {
       await deleteMessage();
-      console.log('ready to handleUnSubscribe');
       await handleUnSubscribe(ctx, connector);
 
-      console.log('unsubscribe 2');
       unsubscribe();
       newConnectRequestListenersMap.delete(chatId);
     }
-  }
+  });
 
   const wallets = await getWallets();
-
   const link = connector.connect(wallets);
   const image = await toBuffer(link, { type: 'png' });
-
   const keyboard = getKeyboard(wallets);
 
   const botMessage = await ctx.sendPhoto(Input.fromBuffer(image), {
@@ -78,7 +65,6 @@ export async function verifyHandler(ctx: Context): Promise<void> {
 
   // Add listener to delete message when new connect request is received
   newConnectRequestListenersMap.set(chatId, async () => {
-    console.log('unsubscribe 3');
     unsubscribe();
     await deleteMessage();
     newConnectRequestListenersMap.delete(chatId);
