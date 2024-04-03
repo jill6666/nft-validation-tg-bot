@@ -22,7 +22,7 @@ async function handleUnSubscribe(ctx: Context, connector: TonConnect) {
   const isAdmin = Boolean(adminWhitelist(userId));
   const hasPermission = await checkNftOwnership({
     address: userFriendlyAddress,
-    collection: 'EQCV8xVdWOV23xqOyC1wAv-D_H02f7gAjPzOlNN6Nv1ksVdL',
+    collection: process.env.NFT_COLLECTION!,
   });
 
   const userName =
